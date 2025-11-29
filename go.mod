@@ -34,4 +34,4 @@ require (
 )
 
 // Replace with local path during development
-replace github.com/kra-connect/go-sdk => ../go-sdk
+replace github.com/kra-connect/go-sdk => ../kra-connect-go-sdk
