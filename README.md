@@ -5,6 +5,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.22%2B-blue.svg)](https://golang.org)
 
+## Repository
+
+- **GitHub**: [BerjisTech/kra-cli](https://github.com/BerjisTech/kra-cli)
+- **Documentation**: [https://docs.kra-connect.dev/cli](https://docs.kra-connect.dev/cli)
+
 ## Overview
 
 KRA-CLI is a powerful command-line tool that provides easy access to the Kenya Revenue Authority's GavaConnect API for tax compliance verification, PIN validation, TCC checking, and more.
@@ -23,23 +28,29 @@ KRA-CLI is a powerful command-line tool that provides easy access to the Kenya R
 
 ## Installation
 
+### Using Go Install
+
+```bash
+go install github.com/BerjisTech/kra-cli@latest
+```
+
 ### From Source
 
 ```bash
 # Clone the repository
-git clone https://github.com/kra-connect/kra-cli.git
+git clone https://github.com/BerjisTech/kra-cli.git
 cd kra-cli
 
 # Build
 go build -o kra-cli
 
-# Install
+# Install locally
 go install
 ```
 
-### From Release (Coming Soon)
+### From Release
 
-Download pre-built binaries from the [releases page](https://github.com/kra-connect/kra-cli/releases).
+Download pre-built binaries from the [releases page](https://github.com/BerjisTech/kra-cli/releases).
 
 **macOS:**
 ```bash
@@ -531,27 +542,60 @@ sudo apt-get update && sudo apt-get install ca-certificates
 brew install ca-certificates
 ```
 
+## Publishing
+
+### Creating a New Release
+
+```bash
+# Update version
+# Update CHANGELOG.md
+
+# Build for all platforms
+GOOS=windows GOARCH=amd64 go build -o kra-cli-windows-amd64.exe
+GOOS=linux GOARCH=amd64 go build -o kra-cli-linux-amd64
+GOOS=darwin GOARCH=amd64 go build -o kra-cli-darwin-amd64
+GOOS=darwin GOARCH=arm64 go build -o kra-cli-darwin-arm64
+
+# Tag the release
+git tag -a v1.0.0 -m "Release version 1.0.0"
+git push origin v1.0.0
+
+# Create GitHub release with binaries
+gh release create v1.0.0 \
+  --title "v1.0.0" \
+  --notes "Release notes here" \
+  kra-cli-windows-amd64.exe \
+  kra-cli-linux-amd64 \
+  kra-cli-darwin-amd64 \
+  kra-cli-darwin-arm64
+```
+
 ## Contributing
 
-Contributions are welcome! Please see [CONTRIBUTING.md](../../CONTRIBUTING.md) for guidelines.
+Contributions are welcome! Please:
+
+1. Fork the repository: [BerjisTech/kra-cli](https://github.com/BerjisTech/kra-cli)
+2. Create a feature branch
+3. Make your changes with tests
+4. Submit a pull request
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
+MIT License - see [LICENSE](./LICENSE) for details.
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/kra-connect/kra-cli/issues)
+- **Issues**: [GitHub Issues](https://github.com/BerjisTech/kra-cli/issues)
 - **Documentation**: [docs.kra-connect.dev](https://docs.kra-connect.dev)
-- **Email**: support@kra-connect.dev
+- **Discussions**: [GitHub Discussions](https://github.com/BerjisTech/kra-cli/discussions)
 
 ## Related Projects
 
-- [Go SDK](../go-sdk) - Go library for KRA GavaConnect API
-- [Python SDK](../python-sdk) - Python library
-- [Node.js SDK](../node-sdk) - Node.js/TypeScript library
-- [PHP SDK](../php-sdk) - PHP library
-- [Flutter SDK](../flutter-sdk) - Dart/Flutter library
+- [Go SDK](https://github.com/BerjisTech/kra-connect-go-sdk) - Go library for KRA GavaConnect API
+- [Python SDK](https://github.com/BerjisTech/kra-connect-python-sdk) - Python library
+- [Node.js SDK](https://github.com/BerjisTech/kra-connect-node-sdk) - Node.js/TypeScript library
+- [PHP SDK](https://github.com/BerjisTech/kra-connect-php-sdk) - PHP library
+- [Flutter SDK](https://github.com/BerjisTech/kra-connect-flutter-sdk) - Dart/Flutter library
 
 ## Changelog
 
