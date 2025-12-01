@@ -1,0 +1,73 @@
+name: Release CLI Binaries
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.21'
+
+    - name: Run tests
+      run: go test -v ./...
+
+    - name: Build binaries for multiple platforms
+      run: |
+        # Linux AMD64
+        GOOS=linux GOARCH=amd64 go build -o kra-cli-linux-amd64 .
+
+        # Linux ARM64
+        GOOS=linux GOARCH=arm64 go build -o kra-cli-linux-arm64 .
+
+        # macOS AMD64
+        GOOS=darwin GOARCH=amd64 go build -o kra-cli-darwin-amd64 .
+
+        # macOS ARM64 (Apple Silicon)
+        GOOS=darwin GOARCH=arm64 go build -o kra-cli-darwin-arm64 .
+
+        # Windows AMD64
+        GOOS=windows GOARCH=amd64 go build -o kra-cli-windows-amd64.exe .
+
+        # Windows ARM64
+        GOOS=windows GOARCH=arm64 go build -o kra-cli-windows-arm64.exe .
+
+    - name: Create checksums
+      run: |
+        sha256sum kra-cli-* > checksums.txt
+        cat checksums.txt
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          kra-cli-linux-amd64
+          kra-cli-linux-arm64
+          kra-cli-darwin-amd64
+          kra-cli-darwin-arm64
+          kra-cli-windows-amd64.exe
+          kra-cli-windows-arm64.exe
+          checksums.txt
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Installation instructions
+      run: |
+        echo "✅ Release created successfully!"
+        echo ""
+        echo "Users can install via:"
+        echo "  go install github.com/BerjisTech/kra-cli@${{ github.ref_name }}"
+        echo ""
+        echo "Or download binaries from:"
+        echo "  https://github.com/BerjisTech/kra-cli/releases/tag/${{ github.ref_name }}"
