@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	kra "github.com/kra-connect/go-sdk"
-	"github.com/kra-connect/kra-cli/internal"
+	kra "github.com/BerjisTech/kra-connect-go-sdk"
+	"github.com/BerjisTech/kra-cli/internal"
 	"github.com/spf13/cobra"
 )
 

@@ -1,9 +1,9 @@
-module github.com/kra-connect/kra-cli
+module github.com/BerjisTech/kra-cli
 
 go 1.22
 
 require (
-	github.com/kra-connect/go-sdk v0.1.0
+	github.com/BerjisTech/kra-connect-go-sdk v0.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.2
@@ -34,4 +34,4 @@ require (
 )
 
 // Replace with local path during development
-replace github.com/kra-connect/go-sdk => ../kra-connect-go-sdk
+replace github.com/BerjisTech/kra-connect-go-sdk => ../kra-connect-go-sdk

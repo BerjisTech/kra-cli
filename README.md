@@ -60,11 +60,11 @@ brew install kra-cli
 **Linux:**
 ```bash
 # Debian/Ubuntu
-wget https://github.com/kra-connect/kra-cli/releases/download/v0.1.0/kra-cli_0.1.0_linux_amd64.deb
+wget https://github.com/BerjisTech/kra-cli/releases/download/v0.1.0/kra-cli_0.1.0_linux_amd64.deb
 sudo dpkg -i kra-cli_0.1.0_linux_amd64.deb
 
 # Red Hat/CentOS
-wget https://github.com/kra-connect/kra-cli/releases/download/v0.1.0/kra-cli_0.1.0_linux_amd64.rpm
+wget https://github.com/BerjisTech/kra-cli/releases/download/v0.1.0/kra-cli_0.1.0_linux_amd64.rpm
 sudo rpm -i kra-cli_0.1.0_linux_amd64.rpm
 ```
 
@@ -471,7 +471,7 @@ Error: failed to verify PIN: authentication failed: invalid API key
 
 ```bash
 # Clone repository
-git clone https://github.com/kra-connect/kra-cli.git
+git clone https://github.com/BerjisTech/kra-cli.git
 cd kra-cli
 
 # Install dependencies

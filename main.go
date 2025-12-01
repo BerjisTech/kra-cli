@@ -2,7 +2,7 @@
 package main
 
 import (
-	"github.com/kra-connect/kra-cli/cmd"
+	"github.com/BerjisTech/kra-cli/cmd"
 )
 
 func main() {

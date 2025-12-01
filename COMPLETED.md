@@ -163,7 +163,7 @@ kra-cli verify-pin P051234567A
 ### Dependencies
 ```go
 require (
-    github.com/kra-connect/go-sdk v0.1.0
+    github.com/BerjisTech/kra-connect-go-sdk v0.1.0
     github.com/olekukonko/tablewriter v0.0.5
     github.com/spf13/cobra v1.8.0
     github.com/spf13/viper v1.18.2
