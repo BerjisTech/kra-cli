@@ -3,7 +3,7 @@ module github.com/BerjisTech/kra-cli
 go 1.22
 
 require (
-	github.com/BerjisTech/kra-connect-go-sdk v0.1.1
+	github.com/BerjisTech/kra-connect-go-sdk v0.1.2
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.2
@@ -33,6 +33,3 @@ require (
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-// Replace with local path during development
-replace github.com/BerjisTech/kra-connect-go-sdk => ../kra-connect-go-sdk
