@@ -5,26 +5,31 @@ import (
 	"encoding/csv"
 	"fmt"
 	"os"
+	"strings"
 
-	kra "github.com/BerjisTech/kra-connect-go-sdk"
 	"github.com/BerjisTech/kra-cli/internal"
+	kra "github.com/BerjisTech/kra-connect-go-sdk"
 	"github.com/spf13/cobra"
 )
 
 var (
 	tccBatchFile string
+	tccPIN       string
 )
 
 var checkTccCmd = &cobra.Command{
 	Use:   "check-tcc [TCC]",
 	Short: "Check a Tax Compliance Certificate",
-	Long: `Check the validity of a Tax Compliance Certificate (TCC) using the GavaConnect API.`,
+	Long:  `Check the validity of a Tax Compliance Certificate (TCC) using the GavaConnect API.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if tccBatchFile == "" && len(args) != 1 {
 			return fmt.Errorf("requires either a TCC argument or --batch flag")
 		}
 		if tccBatchFile != "" && len(args) > 0 {
 			return fmt.Errorf("cannot use both TCC argument and --batch flag")
+		}
+		if tccBatchFile == "" && tccPIN == "" {
+			return fmt.Errorf("--pin is required when checking a single TCC")
 		}
 		return nil
 	},
@@ -34,6 +39,7 @@ var checkTccCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(checkTccCmd)
 	checkTccCmd.Flags().StringVar(&tccBatchFile, "batch", "", "CSV file containing TCCs to check")
+	checkTccCmd.Flags().StringVar(&tccPIN, "pin", "", "Taxpayer PIN associated with the TCC (required when not using --batch)")
 }
 
 func runCheckTcc(cmd *cobra.Command, args []string) error {
@@ -56,7 +62,12 @@ func runCheckTcc(cmd *cobra.Command, args []string) error {
 		fmt.Fprintf(os.Stderr, "Checking TCC: %s\n", tcc)
 	}
 
-	result, err := client.VerifyTCC(ctx, tcc)
+	req := &kra.TCCVerificationRequest{
+		KraPIN:    tccPIN,
+		TCCNumber: tcc,
+	}
+
+	result, err := client.VerifyTCC(ctx, req)
 	if err != nil {
 		return fmt.Errorf("failed to check TCC: %w", err)
 	}
@@ -79,38 +90,49 @@ func runCheckTccBatch(ctx context.Context, client *kra.Client, formatter *intern
 	}
 
 	tccCol := -1
+	pinCol := -1
 	for i, col := range header {
-		if col == "tcc" || col == "TCC" {
+		switch strings.ToLower(col) {
+		case "tcc":
 			tccCol = i
-			break
+		case "pin":
+			pinCol = i
 		}
 	}
 
-	if tccCol == -1 {
-		return fmt.Errorf("CSV file must have a 'tcc' or 'TCC' column")
+	if tccCol == -1 || pinCol == -1 {
+		return fmt.Errorf("CSV file must have 'tcc' and 'pin' columns")
 	}
 
-	tccs := make([]string, 0)
+	requests := make([]*kra.TCCVerificationRequest, 0)
 	for {
 		record, err := reader.Read()
 		if err != nil {
 			break
 		}
 
-		if tccCol < len(record) {
-			tccs = append(tccs, record[tccCol])
+		if tccCol < len(record) && pinCol < len(record) {
+			tccValue := strings.TrimSpace(record[tccCol])
+			pinValue := strings.TrimSpace(record[pinCol])
+			if tccValue == "" || pinValue == "" {
+				continue
+			}
+			requests = append(requests, &kra.TCCVerificationRequest{
+				KraPIN:    pinValue,
+				TCCNumber: tccValue,
+			})
 		}
 	}
 
-	if len(tccs) == 0 {
-		return fmt.Errorf("no TCCs found in CSV file")
+	if len(requests) == 0 {
+		return fmt.Errorf("no TCC/PIN pairs found in CSV file")
 	}
 
 	if verbose {
-		fmt.Fprintf(os.Stderr, "Checking %d TCCs...\n", len(tccs))
+		fmt.Fprintf(os.Stderr, "Checking %d TCCs...\n", len(requests))
 	}
 
-	results, err := client.VerifyTCCsBatch(ctx, tccs)
+	results, err := client.VerifyTCCsBatch(ctx, requests)
 	if err != nil {
 		return fmt.Errorf("failed to check TCCs: %w", err)
 	}

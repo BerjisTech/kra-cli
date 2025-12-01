@@ -19,7 +19,10 @@ Configuration is stored in ~/.kra-cli.yaml by default.
 
 Available settings:
   - api_key: Your KRA GavaConnect API key
+  - client_id: OAuth client ID (Consumer Key)
+  - client_secret: OAuth client secret (Consumer Secret)
   - base_url: KRA API base URL
+  - token_url: OAuth token endpoint
   - timeout: Request timeout in seconds
   - output: Default output format (table, json, csv)
 
@@ -56,7 +59,10 @@ var configSetCmd = &cobra.Command{
 
 Available keys:
   - api-key: Your KRA GavaConnect API key
+  - client-id: OAuth client ID
+  - client-secret: OAuth client secret
   - base-url: KRA API base URL
+  - token-url: OAuth token endpoint
   - timeout: Request timeout in seconds
   - output: Default output format (table, json, csv)
 
@@ -132,14 +138,17 @@ func runConfigSet(cmd *cobra.Command, args []string) error {
 
 	// Validate key
 	validKeys := map[string]bool{
-		"api_key":  true,
-		"base_url": true,
-		"timeout":  true,
-		"output":   true,
+		"api_key":       true,
+		"client_id":     true,
+		"client_secret": true,
+		"base_url":      true,
+		"token_url":     true,
+		"timeout":       true,
+		"output":        true,
 	}
 
 	if !validKeys[viperKey] {
-		return fmt.Errorf("invalid configuration key: %s (valid keys: api-key, base-url, timeout, output)", key)
+		return fmt.Errorf("invalid configuration key: %s (valid keys: api-key, client-id, client-secret, base-url, token-url, timeout, output)", key)
 	}
 
 	// Set the value
@@ -228,8 +237,8 @@ func runConfigView(cmd *cobra.Command, args []string) error {
 
 	fmt.Println("Configuration:")
 	for key, value := range settings {
-		// Mask API key for security
-		if key == "api_key" {
+		// Mask sensitive values
+		if key == "api_key" || key == "client_secret" {
 			valueStr := fmt.Sprintf("%v", value)
 			if len(valueStr) > 8 {
 				fmt.Printf("  %s: %s...%s\n", key, valueStr[:4], valueStr[len(valueStr)-4:])
@@ -279,6 +288,12 @@ func convertKeyToViperFormat(key string) string {
 		return "api_key"
 	case "base-url":
 		return "base_url"
+	case "client-id":
+		return "client_id"
+	case "client-secret":
+		return "client_secret"
+	case "token-url":
+		return "token_url"
 	default:
 		return key
 	}
