@@ -1,3 +1,5 @@
+github.com/BerjisTech/kra-connect-go-sdk v0.1.3 h1:rVZ41dAQJaTH2nXRDkfbf/aU8QZxeyPka+m86Q2+UO8=
+github.com/BerjisTech/kra-connect-go-sdk v0.1.3/go.mod h1:bz3cZjzo0wUO5w1r/TpdXqouLeOmhLr4953xTz7Guzo=
 github.com/cpuguy83/go-md2man/v2 v2.0.3/go.mod h1:tgQtvFlXSQOSOSIRvRPT7W67SCa46tRHOmNcaadrF8o=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
