@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	kra "github.com/kra-connect/go-sdk"
+	kra "github.com/BerjisTech/kra-connect-go-sdk"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

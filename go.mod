@@ -1,9 +1,9 @@
-module github.com/kra-connect/kra-cli
+module github.com/BerjisTech/kra-cli
 
 go 1.22
 
 require (
-	github.com/kra-connect/go-sdk v0.1.0
+	github.com/BerjisTech/kra-connect-go-sdk v0.1.1
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.2
@@ -11,6 +11,7 @@ require (
 
 require (
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
+	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
@@ -34,4 +35,4 @@ require (
 )
 
 // Replace with local path during development
-replace github.com/kra-connect/go-sdk => ../kra-connect-go-sdk
+replace github.com/BerjisTech/kra-connect-go-sdk => ../kra-connect-go-sdk

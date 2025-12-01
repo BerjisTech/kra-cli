@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/kra-connect/kra-cli/internal"
+	"github.com/BerjisTech/kra-cli/internal"
 	"github.com/spf13/cobra"
 )
 
