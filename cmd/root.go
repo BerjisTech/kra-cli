@@ -12,12 +12,15 @@ import (
 )
 
 var (
-	cfgFile   string
-	apiKey    string
-	baseURL   string
-	timeout   int
-	outputFmt string
-	verbose   bool
+	cfgFile      string
+	apiKey       string
+	baseURL      string
+	tokenURL     string
+	clientID     string
+	clientSecret string
+	timeout      int
+	outputFmt    string
+	verbose      bool
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -64,7 +67,10 @@ func init() {
 	// Global flags
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.kra-cli.yaml)")
 	rootCmd.PersistentFlags().StringVar(&apiKey, "api-key", "", "KRA API key (overrides config)")
-	rootCmd.PersistentFlags().StringVar(&baseURL, "base-url", "https://api.kra.go.ke/gavaconnect", "KRA API base URL")
+	rootCmd.PersistentFlags().StringVar(&clientID, "client-id", "", "KRA OAuth client ID (Consumer Key)")
+	rootCmd.PersistentFlags().StringVar(&clientSecret, "client-secret", "", "KRA OAuth client secret (Consumer Secret)")
+	rootCmd.PersistentFlags().StringVar(&baseURL, "base-url", "https://sbx.kra.go.ke", "KRA API base URL")
+	rootCmd.PersistentFlags().StringVar(&tokenURL, "token-url", "https://sbx.kra.go.ke/v1/token/generate?grant_type=client_credentials", "OAuth token URL")
 	rootCmd.PersistentFlags().IntVar(&timeout, "timeout", 30, "request timeout in seconds")
 	rootCmd.PersistentFlags().StringVarP(&outputFmt, "output", "o", "table", "output format: table, json, csv")
 	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
@@ -72,6 +78,9 @@ func init() {
 	// Bind flags to viper
 	viper.BindPFlag("api_key", rootCmd.PersistentFlags().Lookup("api-key"))
 	viper.BindPFlag("base_url", rootCmd.PersistentFlags().Lookup("base-url"))
+	viper.BindPFlag("token_url", rootCmd.PersistentFlags().Lookup("token-url"))
+	viper.BindPFlag("client_id", rootCmd.PersistentFlags().Lookup("client-id"))
+	viper.BindPFlag("client_secret", rootCmd.PersistentFlags().Lookup("client-secret"))
 	viper.BindPFlag("timeout", rootCmd.PersistentFlags().Lookup("timeout"))
 }
 
@@ -112,8 +121,17 @@ func initConfig() {
 	if !rootCmd.PersistentFlags().Changed("base-url") {
 		baseURL = viper.GetString("base_url")
 	}
+	if !rootCmd.PersistentFlags().Changed("token-url") {
+		tokenURL = viper.GetString("token_url")
+	}
 	if !rootCmd.PersistentFlags().Changed("timeout") {
 		timeout = viper.GetInt("timeout")
+	}
+	if !rootCmd.PersistentFlags().Changed("client-id") {
+		clientID = viper.GetString("client_id")
+	}
+	if !rootCmd.PersistentFlags().Changed("client-secret") {
+		clientSecret = viper.GetString("client_secret")
 	}
 }
 
@@ -125,7 +143,7 @@ func getAPIKey() (string, error) {
 
 	key := viper.GetString("api_key")
 	if key == "" {
-		return "", fmt.Errorf("API key not set. Use --api-key flag, set KRA_API_KEY environment variable, or run: kra-cli config set api-key YOUR_KEY")
+		return "", fmt.Errorf("authentication not configured. Provide --client-id/--client-secret or set an API key via --api-key / KRA_API_KEY")
 	}
 
 	return key, nil
@@ -133,15 +151,23 @@ func getAPIKey() (string, error) {
 
 // createClient creates a KRA client with the configured options
 func createClient() (*kra.Client, error) {
-	key, err := getAPIKey()
-	if err != nil {
-		return nil, err
-	}
-
 	opts := []kra.Option{
-		kra.WithAPIKey(key),
 		kra.WithBaseURL(baseURL),
 		kra.WithTimeout(time.Duration(timeout) * time.Second),
+	}
+
+	if tokenURL != "" {
+		opts = append(opts, kra.WithTokenURL(tokenURL))
+	}
+
+	if clientID != "" && clientSecret != "" {
+		opts = append(opts, kra.WithClientCredentials(clientID, clientSecret))
+	} else {
+		key, err := getAPIKey()
+		if err != nil {
+			return nil, err
+		}
+		opts = append(opts, kra.WithAPIKey(key))
 	}
 
 	if verbose {
