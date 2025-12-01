@@ -3,7 +3,7 @@ module github.com/BerjisTech/kra-cli
 go 1.22
 
 require (
-	github.com/BerjisTech/kra-connect-go-sdk v0.1.2
+	github.com/BerjisTech/kra-connect-go-sdk v0.1.3
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.2
